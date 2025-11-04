@@ -1,0 +1,208 @@
+<!DOCTYPE html> 
+<html lang="fr"> 
+<head> 
+ <meta charset="UTF-8"> 
+ <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+ <title>To Do List _ Saisie de Tâche</title> 
+ <link rel="stylesheet" href="index.css">
+
+ <style>
+:root { 
+ --couleur-primaire: #966692; 
+ --couleur-secondaire: #a689bf; 
+ --couleur-fond: #f7f9fc; 
+ --couleur-texte: #333; 
+ --couleur-bordure: #ddd; 
+} 
+
+body { 
+ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+ margin: 0; 
+ padding: 0; 
+ background-color: var(--couleur-fond); 
+ color: var(--couleur-texte); 
+ line-height: 1.6; 
+} 
+
+header { 
+ background-color: var(--couleur-primaire); 
+ color: white; 
+ padding: 1.5rem 0; 
+ text-align: center; 
+ box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+} 
+
+header h1 { 
+ margin: 0; 
+ font-size: 1.8rem; 
+}
+
+main { 
+ padding: 1rem; 
+ display: flex; 
+ justify-content: center; 
+} 
+
+.formulaire-saisie { 
+ width: 100%; 
+ max-width: 550px; 
+ background-color: white; 
+ padding: 25px; 
+ border-radius: 12px; 
+ box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); 
+} 
+
+fieldset { 
+ border: 2px solid var(--couleur-bordure); 
+ padding: 20px; 
+ margin-bottom: 25px; 
+ border-radius: 8px; 
+} 
+
+legend { 
+ font-weight: 700; 
+ color: var(--couleur-primaire); 
+ padding: 0 10px; 
+ font-size: 1.2em; 
+} 
+ 
+.form-group { 
+ margin-bottom: 20px; 
+} 
+
+label { 
+ display: block; 
+ margin-bottom: 8px; 
+ font-weight: 600;
+font-size: 0.95em; 
+ color: #555; 
+} 
+
+input[type="text"], 
+textarea, 
+select { 
+ width: 100%; 
+ padding: 12px; 
+ border: 1px solid var(--couleur-bordure); 
+ border-radius: 6px; 
+ box-sizing: border-box; 
+ font-size: 1em; 
+ transition: border-color 0.3s; 
+} 
+
+input[type="text"]:focus, 
+textarea:focus, 
+select:focus { 
+ border-color: var(--couleur-primaire); 
+ outline: none; 
+ box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); 
+} 
+
+textarea { 
+ min-height: 100px; 
+} 
+
+
+.bouton-group { 
+ margin-top: 30px; 
+} 
+
+.btn-save { 
+ width: 100%; 
+ padding: 15px; 
+ background-color: var(--couleur-secondaire); 
+ color: white; 
+ border: none; 
+ border-radius: 8px;
+cursor: pointer; 
+ font-size: 1.2em; 
+ font-weight: 700; 
+ letter-spacing: 1px; 
+ transition: background-color 0.3s, transform 0.1s; 
+} 
+
+.btn-save:hover { 
+ background-color: #218838; 
+} 
+
+.btn-save:active { 
+ transform: translateY(1px); 
+} 
+
+footer { 
+ text-align: center; 
+ padding: 15px; 
+ margin-top: 30px; 
+ border-top: 1px solid #a784b1; 
+ font-size: 0.85em; 
+ color: #f6f6f6; 
+ background-color: rgb(160, 124, 177); 
+} 
+
+@media (min-width: 768px) { 
+ main { 
+ padding: 2rem; 
+ } 
+ .btn-save {
+width: 50%; 
+ margin: 0 auto; 
+ display: block;  
+ } 
+}
+  </style>
+
+</head> 
+
+<body> 
+ <header> 
+  <img src="image/cible.jpg" alt="cible" width="50" height="30">
+ <h1>Le formulaire de To Do List</h1> 
+ </header> 
+ <main> 
+ <form action="#" method="post" class="formulaire-saisie"> 
+  
+ <fieldset> 
+ <legend>Saisie d'une nouvelle tâche</legend> 
+  
+ <div class="form-group"> 
+ <label for="titre">Titre To Do List *</label> 
+ <input type="text" id="titre" name="titre" required 
+ placeholder="Ex: Acheter du pain"> 
+ </div> 
+ <div class="form-group"> 
+ <label for="description">Détails de la tâche</label> 
+ <textarea id="description" name="description" rows="3" 
+ placeholder="Ajouter des précisions sur la tâche..."></textarea> 
+ </div>
+
+<div class="form-group"> 
+ <label for="priorite">Priorité *</label> 
+ <select id="priorite" name="priorite" required> 
+ <option value="" disabled selected>-- Choisir la Priorité --</option> 
+ <option value="urgent">Urgent</option> 
+ <option value="important">Important</option> 
+ <option value="peu-important">Peu Important</option> 
+ </select> 
+ </div> 
+
+ <div class="form-group"> 
+ <label for="var2">Catégorie (Var 2)</label> 
+ <select id="var2" name="var2"> 
+ <option value="" disabled selected>-- Choisir une Catégorie --</option> 
+ <option value="travail">Travail</option> 
+ <option value="personnel">Personnel</option> 
+ <option value="courses">Courses</option> 
+ </select> 
+ </div> 
+  
+ <div class="form-group bouton-group"> 
+ <button type="button" class="btn-save">SAVE</button> 
+ </div> 
+ </fieldset> 
+ </form> 
+ </main> 
+ <footer> 
+ <p>&copy; 2025 - ROSE; KHOUELRY; FERNANDEZ; DEDISH - Le formulaire de To Do List</p> 
+ </footer> 
+</body> 
+</html>
