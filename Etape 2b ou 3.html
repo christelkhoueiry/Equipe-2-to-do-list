@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To Do List _ Saisie de Tâche</title>
+
+  <style>
+:root { 
+  --couleur-primaire: #966692; 
+  --couleur-secondaire: #a689bf; 
+  --couleur-fond: #f7f9fc; 
+  --couleur-texte: #333; 
+  --couleur-bordure: #ddd; 
+} 
+
+body { 
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+  margin: 0; 
+  padding: 0; 
+  background-color: var(--couleur-fond); 
+  color: var(--couleur-texte); 
+  line-height: 1.6; 
+} 
+
+header { 
+  background-color: var(--couleur-primaire); 
+  color: white; 
+  padding: 1.5rem 0; 
+  text-align: center; 
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+} 
+
+main { 
+  padding: 1rem; 
+  display: flex; 
+  flex-direction: column;
+  align-items: center;
+} 
+
+.formulaire-saisie { 
+  width: 100%; 
+  max-width: 550px; 
+  background-color: white; 
+  padding: 25px; 
+  border-radius: 12px; 
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08); 
+  margin-bottom: 30px;
+} 
+
+fieldset { 
+  border: 2px solid var(--couleur-bordure); 
+  padding: 20px; 
+  margin-bottom: 25px; 
+  border-radius: 8px; 
+} 
+
+legend { 
+  font-weight: 700; 
+  color: var(--couleur-primaire); 
+  padding: 0 10px; 
+  font-size: 1.2em; 
+} 
+
+.form-group { 
+  margin-bottom: 20px; 
+} 
+
+label { 
+  display: block; 
+  margin-bottom: 8px; 
+  font-weight: 600;
+  font-size: 0.95em; 
+  color: #555; 
+} 
+
+input[type="text"], 
+input[type="date"],
+textarea, 
+select { 
+  width: 100%; 
+  padding: 12px; 
+  border: 1px solid var(--couleur-bordure); 
+  border-radius: 6px; 
+  box-sizing: border-box; 
+  font-size: 1em; 
+  transition: border-color 0.3s; 
+} 
+
+input[type="text"]:focus, 
+input[type="date"]:focus,
+textarea:focus, 
+select:focus { 
+  border-color: var(--couleur-primaire); 
+  outline: none; 
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2); 
+} 
+
+textarea { 
+  min-height: 100px; 
+} 
+
+.bouton-group { 
+  margin-top: 30px; 
+} 
+
+.btn-save { 
+  width: 100%; 
+  padding: 15px; 
+  background-color: var(--couleur-secondaire); 
+  color: white; 
+  border: none; 
+  border-radius: 8px;
+  cursor: pointer; 
+  font-size: 1.2em; 
+  font-weight: 700; 
+  letter-spacing: 1px; 
+  transition: background-color 0.3s, transform 0.1s; 
+} 
+
+.btn-save:hover { 
+  background-color: #218838; 
+} 
+
+table {
+  border-collapse: collapse;
+  width: 90%;
+  max-width: 700px;
+  background-color: white;
+  box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-bottom: 30px;
+}
+
+th, td {
+  border: 1px solid #999;
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: var(--couleur-secondaire);
+  color: white;
+}
+
+.date {
+  font-size: 0.9rem;
+  color: #555;
+}
+
+button.delete {
+  background: #ff4444;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+
+footer { 
+  text-align: center; 
+  padding: 15px; 
+  margin-top: 30px; 
+  border-top: 1px solid #a784b1; 
+  font-size: 0.85em; 
+  color: #f6f6f6; 
+  background-color: rgb(160, 124, 177); 
+}
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Le formulaire de To Do List</h1>
+  </header>
+
+  <main id="main">
+    <form action="#" method="post" class="formulaire-saisie">
+      <fieldset>
+        <legend>Saisie d'une nouvelle tâche</legend>
+
+        <div class="form-group">
+          <label for="titre">Titre *</label>
+          <input type="text" id="titre" required placeholder="Ex: Réviser l'examen">
+        </div>
+
+        <div class="form-group">
+          <label for="description">Détails de la tâche</label>
+          <textarea id="description" rows="3" placeholder="Ajouter des précisions..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="date">Date limite *</label>
+          <input type="date" id="date" required>
+        </div>
+
+        <div class="form-group">
+          <label for="priorite">Priorité *</label>
+          <select id="priorite" required>
+            <option value="" disabled selected>-- Choisir --</option>
+            <option value="Urgent">Urgent</option>
+            <option value="Pas urgent">Pas urgent</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="statut">Statut *</label>
+          <select id="statut" required>
+            <option value="" disabled selected>-- Choisir --</option>
+            <option value="En attente">En attente</option>
+            <option value="En cours">En cours</option>
+            <option value="Terminée">Terminée</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="categorie">Catégorie *</label>
+          <select id="categorie" required>
+            <option value="" disabled selected>-- Choisir --</option>
+            <option value="Maths">Maths</option>
+            <option value="Science">Science</option>
+            <option value="Anglais">Anglais</option>
+          </select>
+        </div>
+
+        <div class="form-group bouton-group">
+          <button type="button" id="saveBtn" class="btn-save">SAVE</button>
+        </div>
+      </fieldset>
+    </form>
+
+    <section id="table-container"></section>
+  </main>
+
+  <footer>
+    <p>&copy; 2025 - ROSE; KHOUELRY; FERNANDEZ; DEDISH</p>
+  </footer>
+
+  <script>
+  
+  let taches = [
+    { titre: "Réviser l'examen", description: "", date: "2025-01-29", priorite: "Urgent", statut: "En cours", categorie: "Maths" }
+  ];
+
+  document.addEventListener("DOMContentLoaded", function () {
+    document.getElementById("saveBtn").addEventListener("click", addTask);
+    afficherTaches();
+  });
+
+  function addTask() {
+    let titre = document.getElementById("titre").value.trim();
+    let description = document.getElementById("description").value.trim();
+    let date = document.getElementById("date").value;
+    let priorite = document.getElementById("priorite").value;
+    let statut = document.getElementById("statut").value;
+    let categorie = document.getElementById("categorie").value;
+
+    if (!titre || !date || !priorite || !statut || !categorie) {
+      alert("Veuillez remplir tous les champs obligatoires !");
+      return;
+    }
+
+    taches.push({ titre, description, date, priorite, statut, categorie });
+    afficherTaches();
+    document.querySelector(".formulaire-saisie").reset();
+  }
+
+  function afficherTaches() {
+    let section = document.getElementById("table-container");
+    section.innerHTML = "";
+
+    let table = document.createElement("table");
+    let thead = document.createElement("thead");
+    let headRow = document.createElement("tr");
+
+    ["N°", "Titre", "Date limite", "Catégorie", "Priorité", "Statut"].forEach(h => {
+      let th = document.createElement("th");
+      th.textContent = h;
+      headRow.appendChild(th);
+    });
+
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    let tbody = document.createElement("tbody");
+    taches.forEach((tache, index) => {
+      let tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${index + 1}</td>
+        <td>${tache.titre}</td>
+        <td class="date">${tache.date}</td>
+        <td>${tache.categorie}</td>
+        <td>${tache.priorite}</td>
+        <td>${tache.statut}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    section.appendChild(table);
+  }
+  </script>
+</body>
+</html>
