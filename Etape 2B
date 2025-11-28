@@ -1,0 +1,27 @@
+<html>
+<Body>
+<script>
+Document.onreadystatechange = fonction (){ if(document.readystate==="complete") {dynamicwriting();}};
+//method DOM //
+function afficherTaches() {
+    let section = document.getElementById("table-container");
+    section.innerHTML = "";
+ 
+    let table = document.createElement("table");
+    let thead = document.createElement("thead");
+    let headRow = document.createElement("tr");
+ 
+    ["N°", "Titre", "Date limite", "Catégorie", "Priorité", "Statut"].forEach(h => {
+      let th = document.createElement("th");
+      th.textContent = h;
+      headRow.appendChild(th);
+    });
+ 
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+//templateliterals//
+var htmlcode="<table><thead><tr><th>tache/th><th>date</th><th>priorite</th><th> statut </th> <th> catégorie </th></tr></thead><ttable>";
+
+</script>
+</Body>
+</html> 
