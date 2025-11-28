@@ -1,6 +1,85 @@
-<html>
-<Body>
 <script>
+<body>
+<html> 
+let taches = [
+  { titre: "Faire les courses", description: "Acheter du lait", priorite: "urgent", statut: "En cours" , var2: "personnel" }
+];
+
+ document.onreadystatechange = function () {
+   if (document.readyState === "complete") {
+     document.getElementById('saveBtn').addEventListener('click', addTask);
+     dynamicWriting();
+   }
+ };
+ function addTask() {
+   let titre = document.getElementById('titre').value;
+   let description = document.getElementById('description').value;
+   let priorite = document.getElementById('priorite').value;
+   let var2 = document.getElementById('var2').value;
+   if (!titre || !priorite) {
+     alert("Veuillez remplir les champs obligatoires !");
+     return;
+   }
+   let nouvelleTache = {
+     titre: titre,
+     description: description,
+     priorite: priorite,
+     var2: var2
+   };
+   taches.push(nouvelleTache);
+   console.log(taches);
+   dynamicWriting();
+   document.querySelector('.formulaire-saisie').reset();
+ }
+ function dynamicWriting() {
+   let nbTaches = taches.length;
+   let section = document.getElementById('main');
+   section.innerHTML = '';
+ 
+   if (nbTaches === 0) return;
+ 
+   let table = document.createElement('table');
+   let thead = document.createElement('thead');
+   let headRow = document.createElement('tr');
+   ['Titre', 'Description', 'Priorité', 'Statut', 'Catégorie'].forEach(function(h) {
+     let th = document.createElement('th');
+     th.textContent = h;
+     headRow.appendChild(th);
+   });
+   thead.appendChild(headRow);
+   table.appendChild(thead);
+ 
+   let tbody = document.createElement('tbody');
+ 
+   for (let i = 0; i < nbTaches; i++) {
+     let newRow = document.createElement('tr');
+ 
+     let newCellTitre = document.createElement('td'); // 3. Создаём <td>
+      let textContentTitre = document.createTextNode(taches[i].titre); // 4. Создаём текст
+      newCellTitre.appendChild(textContentTitre); // Текст добавляется в <td>
+      newRow.appendChild(newCellTitre); // <td> добавляется в <tr>
+ 
+      let newCellDescription = document.createElement('td');
+      let textContentDescription = document.createTextNode(taches[i].description);
+      newCellDescription.appendChild(textContentDescription);
+      newRow.appendChild(newCellDescription);
+ 
+      let newCellPriorite = document.createElement('td');
+      let textContentPriorite = document.createTextNode(taches[i].priorite);
+      newCellPriorite.appendChild(textContentPriorite);
+      newRow.appendChild(newCellPriorite);
+ 
+      let newCellCategorie = document.createElement('td');
+      let textContentCategorie = document.createTextNode(taches[i].var2);
+      newCellCategorie.appendChild(textContentCategorie);
+      newRow.appendChild(newCellCategorie);
+ 
+tbody.appendChild(newRow);
+}
+ 
+table.appendChild(tbody);
+section.appendChild(table);
+}
 Document.onreadystatechange = fonction (){ if(document.readystate==="complete") {dynamicwriting();}};
 //method DOM //
 function afficherTaches() {
@@ -16,12 +95,33 @@ function afficherTaches() {
       th.textContent = h;
       headRow.appendChild(th);
     });
- 
     thead.appendChild(headRow);
     table.appendChild(thead);
 //templateliterals//
 var htmlcode="<table><thead><tr><th>tache/th><th>date</th><th>priorite</th><th> statut </th> <th> catégorie </th></tr></thead><ttable>";
+employees =[{"titre":"reviser l'examen","desciption":"ajouter des precisions","date":"mmddyyyy","priorite":"urgent","status":"en cours","categorie":"maths"},{"titre":"reviser l'examen","desciption":"ajouter des precisions","date":"mmddyyyy","priorite":"pas urgent","status":"en attente","categorie":"science"},{"titre":"reviser l'examen","desciption":"ajouter des precisions","date":"mmddyyyy","priorite":"urgent","status":"terminer","categorie":"anglais"}];	
 
+console.log(employees);
+document.onreadystatechange = function () {
+  if (document.readyState === "complete") {
+    dynamicWriting();
+  }
+};	
+function dynamicWriting(){
+var nbEmployees=employees.length;
+var htmlTable=document.createElement('table');
+var newLine,newCell,textContent;
+employees.forEach(function(item,index){
+newLine=document.createElement('tr');
+letcategoryList=[{"idcategory":"1","category":"maths",
+"validcategory":"1"},{"idcategory":"2","category":"anglais", 
+"validcategory":"1"},{"idcategory":"3","category":"science",
+"validcategory":"1"}]
+<fromid="tachewebform"
+tachetitle<input type="test" id="titletache"><br>
+category<select id="idcategory" required>
+<option value="3"> ----Choose---</option>
+</select><br>
 </script>
-</Body>
+</body>
 </html> 
