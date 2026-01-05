@@ -1,0 +1,6 @@
+[
+	{ "idStatus": 1, "status": "En attente" },
+	{ "idStatus": 2, "status": "En cours" },
+	{ "idStatus": 3, "status": "Terminée" },
+	{ "idStatus": 4, "status": "Annulée" }
+]
