@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Préparation Examen - Enregistrement localStorage</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        // Données JSON des paramètres
+
+        // Catégories de préparation
+        let categories = [
+            { idCategory: 1, name: "Connaître l'examen" },
+            { idCategory: 2, name: "Évaluer et prioriser" },
+            { idCategory: 3, name: "Planifier les révisions" },
+            { idCategory: 4, name: "Réviser activement" },
+            { idCategory: 5, name: "S'entraîner et ajuster" }
+        ];
+
+        // Matières
+        let subjects = [
+            { idSubject: 1, name: "Mathématiques" },
+            { idSubject: 2, name: "Physique" },
+            { idSubject: 3, name: "Chimie" }
+        ];
+
+        // Statuts
+        let statuses = [
+            { idStatus: 1, status: "En attente" },
+            { idStatus: 2, status: "En cours" },
+            { idStatus: 3, status: "Terminée" },
+            { idStatus: 4, status: "Annulée" }
+        ];
+
+        // Fonction pour générer dynamiquement les options du select des catégories
+        function refreshCategorySelect() {
+            let select = document.getElementById("taskCategory");
+            select.innerHTML = "";
+            for (let i = 0; i < categories.length; i++) {
+                let option = document.createElement("option");
+                option.value = categories[i].idCategory;
+                option.textContent = categories[i].name;
+                select.appendChild(option);
+            }
+        }
+
+        // Fonction pour générer dynamiquement les options du select des matières
+        function refreshSubjectSelect() {
+            let select = document.getElementById("taskSubject");
+            select.innerHTML = "";
+            for (let i = 0; i < subjects.length; i++) {
+                let option = document.createElement("option");
+                option.value = subjects[i].idSubject;
+                option.textContent = subjects[i].name;
+                select.appendChild(option);
+            }
+        }
+
+        // Fonction pour générer dynamiquement les options du select des statuts
+        function refreshStatusSelect() {
+            let select = document.getElementById("taskStatus");
+            select.innerHTML = "";
+            for (let i = 0; i < statuses.length; i++) {
+                let option = document.createElement("option");
+                option.value = statuses[i].idStatus;
+                option.textContent = statuses[i].status;
+                select.appendChild(option);
+            }
+        }
+
+        // Fonction saveTask() - Enregistrement d'une tâche dans le localStorage
+        function saveTask() {
+            // Lecture des champs du formulaire
+            let title = document.getElementById("title").value;
+            let description = document.getElementById("description").value;
+            let idCategory = document.getElementById("taskCategory").value;
+            let idSubject = document.getElementById("taskSubject").value;
+            let idStatus = document.getElementById("taskStatus").value;
+            let deadline = document.getElementById("deadline").value;
+
+            // Vérification des champs obligatoires
+            let form = document.getElementById("task-form");
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            // Initialiser la liste des tâches
+            let taskList = [];
+
+            // Vérifier si des tâches existent déjà dans le localStorage
+            let storedTasks = localStorage.getItem("tasks");
+            if (storedTasks) {
+                taskList = JSON.parse(storedTasks);
+            }
+
+            // Créer l'identifiant de la nouvelle tâche (max ID + 1)
+            let newId = 1;
+            for (let i = 0; i < taskList.length; i++) {
+                if (taskList[i].idTask >= newId) {
+                    newId = taskList[i].idTask + 1;
+                }
+            }
+
+            // Créer la nouvelle tâche au format JSON
+            let newTask = {
+                idTask: newId,
+                title: title,
+                description: description,
+                idCategory: parseInt(idCategory),
+                idSubject: parseInt(idSubject),
+                idStatus: parseInt(idStatus),
+                deadline: deadline
+            };
+
+            // Afficher dans la console pour vérification
+            console.log("Nouvelle tâche créée :");
+            console.log(newTask);
+
+            // Ajouter la tâche à la liste avec push()
+            taskList.push(newTask);
+
+            // Enregistrer la liste dans le localStorage avec stringify()
+            localStorage.setItem("tasks", JSON.stringify(taskList));
+
+            console.log("Liste des tâches enregistrée :");
+            console.log(taskList);
+
+            // Réinitialiser le formulaire
+            form.reset();
+
+            alert("Tâche enregistrée avec succès ! Consultez le localStorage dans les outils de développement (F12 → Application → Storage → localStorage).");
+        }
+
+        // Exécution au chargement du document
+        document.onreadystatechange = function () {
+            if (document.readyState === "complete") {
+                refreshCategorySelect();
+                refreshSubjectSelect();
+                refreshStatusSelect();
+            }
+        };
+    </script>
+</head>
+
+<body>
+
+    <header>
+        <h1>Préparation Examen</h1>
+    </header>
+
+    <main>
+        <section id="form-section">
+            <h2>Ajouter une tâche</h2>
+
+            <form id="task-form">
+
+                <div class="field">
+                    <label for="title">Nom de la tâche :</label>
+                    <input type="text" id="title" name="title" placeholder="Ex: Réviser les fonctions" required>
+                </div>
+
+                <div class="field">
+                    <label for="description">Description :</label>
+                    <textarea id="description" name="description" placeholder="Détails de la tâche..."></textarea>
+                </div>
+
+                <div class="field">
+                    <label for="taskCategory">Catégorie :</label>
+                    <select id="taskCategory" name="taskCategory" required>
+                        <!-- Options générées dynamiquement par JavaScript -->
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="taskSubject">Matière :</label>
+                    <select id="taskSubject" name="taskSubject" required>
+                        <!-- Options générées dynamiquement par JavaScript -->
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="taskStatus">Statut :</label>
+                    <select id="taskStatus" name="taskStatus" required>
+                        <!-- Options générées dynamiquement par JavaScript -->
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="deadline">Date limite :</label>
+                    <input type="date" id="deadline" name="deadline" required>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button" onclick="saveTask()">Enregistrer la tâche</button>
+                </div>
+
+            </form>
+        </section>
+
+    </main>
+
+    <footer>
+        <p>Créé par <strong>Angela</strong></p>
+        <p>&copy; 2025 - Tous droits réservés</p>
+    </footer>
+
+</body>
+
+</html>
