@@ -17,15 +17,15 @@ Cette application permet de gérer des tâches de révision organisées par **ma
 	"description": "Revoir les chapitres sur les fonctions dérivées",
 	"idCategory": 4,
 	"idSubject": 1,
-	"deadline": "2025-12-18",
-	"completed": false
+	"idStatus": 1,
+	"deadline": "2025-12-18"
 }
 ```
 
 - **idTask** : Clé primaire auto-incrémentée
 - **idCategory** : Clé étrangère vers `categories`
 - **idSubject** : Clé étrangère vers `subjectList`
-- **completed** : Booléen pour l'archivage
+- **idStatus** : Clé étrangère vers `statuses`
 
 ### Urgences (`urgencies`)
 
@@ -37,21 +37,31 @@ Cette application permet de gérer des tâches de révision organisées par **ma
 | 3 | Urgent | #FF9800 | 3-4 jours |
 | 4 | Très urgent | #F44336 | ≤ 2 jours |
 
+### Statuts (`statuses`)
+
+4 statuts possibles pour une tâche :
+| ID | Statut | Couleur |
+|----|--------|--------|
+| 1 | En attente | #95a5a6 |
+| 2 | En cours | #3498db |
+| 3 | Terminée | #27ae60 |
+| 4 | Annulée | #e74c3c |
+
 ### Catégories (`categories`)
 
 5 catégories de préparation d'examen avec `idCategory`, `name` et `description`.
 
 ### Matières (`subjectList`)
 
-Gérées dynamiquement par l'utilisateur avec `idSubject` et `name`. Stockées en localStorage sous la clé `interviewSubjects`.
+Gérées dynamiquement par l'utilisateur avec `idSubject` et `name`. Stockées en localStorage sous la clé `studySubjects`.
 
 ## Fonctionnalités implémentées
 
 ### Étape 1 - Données JSON
 
 - Structure JSON avec identifiants (clés primaires)
-- Relations via clés étrangères (idCategory, idSubject)
-- Livrables dans les dossiers `etape-1a/`, `etape-1b/`, `etape-1c/`, `etape-1d/`
+- Relations via clés étrangères (idCategory, idSubject, idStatus)
+- Livrables dans les dossiers `etape-1a/`, `etape-1b/`, `etape-1c/`, `etape-1d/`, `etape-1e/`
 
 ### Étape 2 - Formulaire
 
@@ -61,34 +71,35 @@ Gérées dynamiquement par l'utilisateur avec `idSubject` et `name`. Stockées e
 
 ### Étape 3A - Formulaire dynamique
 
-- Génération dynamique des `<select>` via `refreshCategorySelect()` et `refreshSubjectSelect()`
+- Génération dynamique des `<select>` via `refreshCategorySelect()`, `refreshSubjectSelect()` et `refreshStatusSelect()`
 - Données JSON injectées dans le DOM au chargement
 
 ### Étape 3B - Enregistrement localStorage
 
-- Clés : `interviewTasks` (tâches), `interviewSubjects` (matières)
+- Clés : `studyTasks` (tâches), `studySubjects` (matières)
 - Utilisation de `JSON.parse()` / `JSON.stringify()`
 - ID auto-incrémenté basé sur le max existant + 1
 
 ### Étape 3C - Tableau récapitulatif
 
-- Affichage dans `<table>` avec colonnes : ID, Nom, Description, Catégorie, Matière, Date limite, Urgence, Actions
-- Résolution des clés étrangères via `findCategory()` et `findSubject()`
-- Badge coloré pour l'urgence
+- Affichage dans `<table>` avec colonnes : ID, Nom, Description, Catégorie, Matière, Statut, Date limite, Urgence, Actions
+- Résolution des clés étrangères via `findCategory()`, `findSubject()` et `findStatus()`
+- Badge coloré pour l'urgence et le statut
 
 ### Étape 3D - Archivage et gestion
 
-- Checkbox pour marquer une tâche comme terminée (`completed: true`)
-- Style barré pour les tâches complétées (`.task-completed`)
+- Variable `idStatus` pour gérer le statut de la tâche (En attente, En cours, Terminée, Annulée)
+- Style barré pour les tâches terminées ou annulées (`.task-completed`)
 - Boutons Modifier/Supprimer pour chaque tâche
 - Édition en place avec pré-remplissage du formulaire
+- Archivage des tâches terminées/annulées
 
 ## Stockage localStorage
 
-| Clé                 | Contenu                 |
-| ------------------- | ----------------------- |
-| `interviewTasks`    | Array JSON des tâches   |
-| `interviewSubjects` | Array JSON des matières |
+| Clé             | Contenu                 |
+| --------------- | ----------------------- |
+| `studyTasks`    | Array JSON des tâches   |
+| `studySubjects` | Array JSON des matières |
 
 ## Technologies
 
