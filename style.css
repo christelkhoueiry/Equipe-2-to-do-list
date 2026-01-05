@@ -245,7 +245,8 @@ tr:hover {
 	background-color: #e8f4f8;
 }
 
-.urgency-badge {
+.urgency-badge,
+.status-badge {
 	display: inline-block;
 	padding: 5px 12px;
 	border-radius: 20px;
@@ -260,8 +261,109 @@ tr:hover {
 	color: #95a5a6;
 }
 
-.task-completed .urgency-badge {
+.task-completed .urgency-badge,
+.task-completed .status-badge {
 	opacity: 0.5;
+}
+
+/* Status dropdown in table */
+.status-select {
+	padding: 6px 10px;
+	border: 2px solid #ddd;
+	border-radius: 20px;
+	background-color: white;
+	color: #2c3e50;
+	font-size: 0.85em;
+	font-weight: bold;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	outline: none;
+	min-width: 120px;
+}
+
+.status-select:hover {
+	border-color: #3498db;
+	box-shadow: 0 2px 8px rgba(52, 152, 219, 0.2);
+}
+
+.status-select:focus {
+	border-color: #3498db;
+	box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+}
+
+.task-completed .status-select {
+	opacity: 0.6;
+}
+
+/* Archived tasks section */
+#archived-section {
+	margin-top: 30px;
+	padding: 20px;
+	background-color: #f8f9fa;
+	border-radius: 8px;
+	border: 1px solid #dee2e6;
+}
+
+#archived-section h2 {
+	margin: 0 0 15px 0;
+	color: #2c3e50;
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	transition: color 0.3s ease;
+}
+
+#archived-section h2:hover {
+	color: #3498db;
+}
+
+#archived-toggle {
+	display: inline-block;
+	font-size: 0.8em;
+	transition: transform 0.3s ease;
+}
+
+.count-badge {
+	display: inline-block;
+	background-color: #95a5a6;
+	color: white;
+	padding: 2px 8px;
+	border-radius: 12px;
+	font-size: 0.75em;
+	font-weight: bold;
+	min-width: 20px;
+	text-align: center;
+}
+
+#archived-content {
+	margin-top: 15px;
+}
+
+#archived-table {
+	width: 100%;
+	border-collapse: collapse;
+	background-color: white;
+}
+
+#archived-table th {
+	background-color: #95a5a6;
+	color: white;
+	padding: 12px;
+	text-align: left;
+	font-weight: bold;
+}
+
+#archived-table td {
+	padding: 10px 12px;
+	border-bottom: 1px solid #dee2e6;
+}
+
+.task-archived {
+	opacity: 0.8;
+}
+
+.task-archived td {
+	color: #6c757d;
 }
 
 /* Pied de page */
