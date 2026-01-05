@@ -53,12 +53,23 @@
 
                     <div class="field">
                         <label for="taskCategory">Catégorie :</label>
-                        <select id="taskCategory" name="taskCategory" required></select>
+                        <select id="taskCategory" name="taskCategory" required>
+                            <option value="" disabled selected>-- Choisir --</option>
+                        </select>
                     </div>
 
                     <div class="field">
                         <label for="taskSubject">Matière :</label>
-                        <select id="taskSubject" name="taskSubject" required></select>
+                        <select id="taskSubject" name="taskSubject" required>
+                            <option value="" disabled selected>-- Choisir --</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="taskStatus">Statut :</label>
+                        <select id="taskStatus" name="taskStatus" required>
+                            <option value="" disabled selected>-- Choisir --</option>
+                        </select>
                     </div>
 
                     <div class="field">
@@ -88,6 +99,14 @@
                 <label for="sort">Trier par :</label>
                 <select id="sort">
                     <option value="id">Ordre d'ajout</option>
+                    <option value="title">Nom (A-Z)</option>
+                    <option value="deadline-asc">Date limite (plus proche)</option>
+                    <option value="deadline-desc">Date limite (plus lointaine)</option>
+                    <option value="urgency-desc">Urgence (plus urgent)</option>
+                    <option value="urgency-asc">Urgence (moins urgent)</option>
+                    <option value="status">Statut</option>
+                    <option value="category">Catégorie</option>
+                    <option value="subject">Matière</option>
                 </select>
             </section>
 
@@ -97,7 +116,6 @@
                 <table id="task-table">
                     <thead>
                         <tr>
-                            <th>Terminée</th>
                             <th>ID</th>
                             <th>Nom</th>
                             <th>Description</th>
@@ -105,6 +123,7 @@
                             <th>Matière</th>
                             <th>Date limite</th>
                             <th>Urgence</th>
+                            <th>Statut</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -112,9 +131,32 @@
                 </table>
             </section>
 
-            <section id="no-subject-message">
-                <p>Veuillez d'abord ajouter au moins une matière pour commencer à gérer vos tâches.</p>
+            <section id="archived-section" style="display: none;">
+                <h2 onclick="toggleArchivedTasks()" style="cursor: pointer; user-select: none;">
+                    <span id="archived-toggle">▶</span> Tâches archivées
+                    <span id="archived-count" class="count-badge">0</span>
+                </h2>
+                <div id="archived-content" style="display: none;">
+                    <table id="archived-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nom</th>
+                                <th>Catégorie</th>
+                                <th>Matière</th>
+                                <th>Date limite</th>
+                                <th>Statut</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="archived-body"></tbody>
+                    </table>
+                </div>
             </section>
+
+            <div id="no-subject-message">
+                <p>Veuillez d'abord ajouter au moins une matière pour commencer à gérer vos tâches.</p>
+            </div>
 
         </div>
 
