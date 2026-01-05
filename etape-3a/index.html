@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Préparation Examen - Formulaire Dynamique</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        // Données JSON des paramètres
+
+        // Niveaux d'urgence
+        let urgencies = [
+            { idUrgency: 1, urgency: "Peu urgent", color: "#4CAF50" },
+            { idUrgency: 2, urgency: "Modéré", color: "#FFC107" },
+            { idUrgency: 3, urgency: "Urgent", color: "#FF9800" },
+            { idUrgency: 4, urgency: "Très urgent", color: "#F44336" }
+        ];
+
+        // Catégories de préparation
+        let categories = [
+            { idCategory: 1, name: "Connaître l'examen", description: "Analysez le format, le contenu et les attentes via le référentiel ou les consignes officielles pour cibler l'essentiel." },
+            { idCategory: 2, name: "Évaluer et prioriser", description: "Identifiez vos forces et faiblesses dans chaque matière, puis listez les sujets prioritaires en fonction de la difficulté et du temps disponible." },
+            { idCategory: 3, name: "Planifier les révisions", description: "Créez un calendrier réaliste en répartissant les matières sur les jours restants, avec des créneaux courts (2-3 par jour) et des pauses intégrées." },
+            { idCategory: 4, name: "Réviser activement", description: "Utilisez des fiches, cartes mentales, répétition espacée et auto-tests pour mémoriser et reformuler les concepts avec vos mots." },
+            { idCategory: 5, name: "S'entraîner et ajuster", description: "Simulez des épreuves avec des annales, évaluez vos progrès régulièrement et adaptez le planning tout en maintenant sommeil et bien-être." }
+        ];
+
+        // Matières
+        let subjects = [
+            { idSubject: 1, name: "Mathématiques" },
+            { idSubject: 2, name: "Physique" },
+            { idSubject: 3, name: "Chimie" }
+        ];
+
+        // Statuts
+        let statuses = [
+            { idStatus: 1, status: "En attente" },
+            { idStatus: 2, status: "En cours" },
+            { idStatus: 3, status: "Terminée" },
+            { idStatus: 4, status: "Annulée" }
+        ];
+
+        // Fonction pour générer dynamiquement les options du select des catégories
+        function refreshCategorySelect() {
+            let select = document.getElementById("taskCategory");
+            select.innerHTML = "";
+            for (let i = 0; i < categories.length; i++) {
+                let option = document.createElement("option");
+                option.value = categories[i].idCategory;
+                option.textContent = categories[i].name;
+                select.appendChild(option);
+            }
+        }
+
+        // Fonction pour générer dynamiquement les options du select des matières
+        function refreshSubjectSelect() {
+            let select = document.getElementById("taskSubject");
+            select.innerHTML = "";
+            for (let i = 0; i < subjects.length; i++) {
+                let option = document.createElement("option");
+                option.value = subjects[i].idSubject;
+                option.textContent = subjects[i].name;
+                select.appendChild(option);
+            }
+        }
+
+        // Fonction pour générer dynamiquement les options du select des statuts
+        function refreshStatusSelect() {
+            let select = document.getElementById("taskStatus");
+            select.innerHTML = "";
+            for (let i = 0; i < statuses.length; i++) {
+                let option = document.createElement("option");
+                option.value = statuses[i].idStatus;
+                option.textContent = statuses[i].status;
+                select.appendChild(option);
+            }
+        }
+
+        // Exécution au chargement du document
+        document.onreadystatechange = function () {
+            if (document.readyState === "complete") {
+                refreshCategorySelect();
+                refreshSubjectSelect();
+                refreshStatusSelect();
+            }
+        };
+    </script>
+</head>
+
+<body>
+
+    <header>
+        <h1>Préparation Examen</h1>
+    </header>
+
+    <main>
+        <section id="form-section">
+            <h2>Ajouter une tâche</h2>
+
+            <form id="task-form">
+
+                <div class="field">
+                    <label for="title">Nom de la tâche :</label>
+                    <input type="text" id="title" name="title" placeholder="Ex: Réviser les fonctions" required>
+                </div>
+
+                <div class="field">
+                    <label for="description">Description :</label>
+                    <textarea id="description" name="description" placeholder="Détails de la tâche..."></textarea>
+                </div>
+
+                <div class="field">
+                    <label for="taskCategory">Catégorie :</label>
+                    <select id="taskCategory" name="taskCategory" required>
+                        <!-- Options générées dynamiquement par JavaScript -->
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="taskSubject">Matière :</label>
+                    <select id="taskSubject" name="taskSubject" required>
+                        <!-- Options générées dynamiquement par JavaScript -->
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="deadline">Date limite :</label>
+                    <input type="date" id="deadline" name="deadline" required>
+                </div>
+
+                <div class="field">
+                    <label for="taskStatus">Statut :</label>
+                    <select id="taskStatus" name="taskStatus" required>
+                        <!-- Options générées dynamiquement par JavaScript -->
+                    </select>
+                </div>
+
+                <div class="form-buttons">
+                    <button type="button">Enregistrer la tâche</button>
+                </div>
+
+            </form>
+        </section>
+    </main>
+
+    <footer>
+        <p>Créé par <strong>Angela</strong></p>
+        <p>&copy; 2025 - Tous droits réservés</p>
+    </footer>
+
+</body>
+
+</html>
