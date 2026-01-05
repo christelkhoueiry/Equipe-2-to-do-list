@@ -6,6 +6,14 @@ let urgencies = [
 	{ idUrgency: 4, urgency: 'Très urgent', color: '#F44336' },
 ];
 
+// Statuts
+let statuses = [
+	{ idStatus: 1, status: 'En attente', color: '#95a5a6' },
+	{ idStatus: 2, status: 'En cours', color: '#3498db' },
+	{ idStatus: 3, status: 'Terminée', color: '#27ae60' },
+	{ idStatus: 4, status: 'Annulée', color: '#e74c3c' },
+];
+
 // Catégories de préparation
 let categories = [
 	{
@@ -45,7 +53,7 @@ let subjectList = loadSubjects();
 let taskList = loadTasks();
 
 function loadSubjects() {
-	let data = localStorage.getItem('interviewSubjects');
+	let data = localStorage.getItem('studySubjects');
 	if (data) {
 		return JSON.parse(data);
 	}
@@ -53,11 +61,11 @@ function loadSubjects() {
 }
 
 function saveSubjects() {
-	localStorage.setItem('interviewSubjects', JSON.stringify(subjectList));
+	localStorage.setItem('studySubjects', JSON.stringify(subjectList));
 }
 
 function loadTasks() {
-	let data = localStorage.getItem('interviewTasks');
+	let data = localStorage.getItem('studyTasks');
 	if (data) {
 		return JSON.parse(data);
 	}
@@ -65,7 +73,7 @@ function loadTasks() {
 }
 
 function saveTasks() {
-	localStorage.setItem('interviewTasks', JSON.stringify(taskList));
+	localStorage.setItem('studyTasks', JSON.stringify(taskList));
 }
 
 function findSubject(id) {
@@ -95,6 +103,15 @@ function findCategory(id) {
 	return 'Non catégorisée';
 }
 
+function findStatus(id) {
+	for (let i = 0; i < statuses.length; i++) {
+		if (statuses[i].idStatus === id) {
+			return statuses[i];
+		}
+	}
+	return { idStatus: 1, status: 'En attente', color: '#95a5a6' };
+}
+
 function displayCategories() {
 	let list = document.getElementById('category-list');
 	list.innerHTML = '';
@@ -114,6 +131,17 @@ function refreshCategorySelect() {
 		let option = document.createElement('option');
 		option.value = categories[i].idCategory;
 		option.textContent = categories[i].name;
+		select.appendChild(option);
+	}
+}
+
+function refreshStatusSelect() {
+	let select = document.getElementById('taskStatus');
+	select.innerHTML = '';
+	for (let i = 0; i < statuses.length; i++) {
+		let option = document.createElement('option');
+		option.value = statuses[i].idStatus;
+		option.textContent = statuses[i].status;
 		select.appendChild(option);
 	}
 }
@@ -249,20 +277,18 @@ function displayTasks(tasks) {
 	let tableBody = document.getElementById('table-body');
 	tableBody.innerHTML = '';
 
-	for (let i = 0; i < tasks.length; i++) {
-		let task = tasks[i];
+	// Filter out completed/cancelled tasks (status 3 or 4)
+	let activeTasks = tasks.filter(function (task) {
+		return task.idStatus !== 3 && task.idStatus !== 4;
+	});
+
+	for (let i = 0; i < activeTasks.length; i++) {
+		let task = activeTasks[i];
 		let urgencyId = calculateUrgencyFromDeadline(task.deadline);
 		let urgencyInfo = findUrgency(urgencyId);
 		let row = document.createElement('tr');
 
-		let completedClass = task.completed ? 'task-completed' : '';
-		let checkedAttr = task.completed ? 'checked' : '';
-
-		row.className = completedClass;
 		row.innerHTML = `
-			<td data-label="Terminée"><input type="checkbox" ${checkedAttr} onchange="toggleCompleted(${
-			task.idTask
-		})"></td>
 			<td data-label="ID">${task.idTask}</td>
 			<td data-label="Nom">${task.title}</td>
 			<td data-label="Description">${task.description}</td>
@@ -272,6 +298,7 @@ function displayTasks(tasks) {
 			<td data-label="Urgence"><span class="urgency-badge" style="background-color: ${
 				urgencyInfo.color
 			}">${urgencyInfo.urgency}</span></td>
+			<td data-label="Statut">${generateStatusDropdown(task)}</td>
 			<td data-label="Actions">
 				<button class="btn-edit" onclick="editTask(${task.idTask})">Modifier</button>
 				<button class="btn-delete" onclick="deleteTask(${
@@ -281,13 +308,79 @@ function displayTasks(tasks) {
 		`;
 		tableBody.appendChild(row);
 	}
+
+	// Also update archived tasks display
+	displayArchivedTasks();
 }
 
 function sortTasks(criteria) {
 	let sortedTasks = taskList.slice();
-	sortedTasks.sort(function (a, b) {
-		return a.idTask - b.idTask;
-	});
+
+	switch (criteria) {
+		case 'id':
+			sortedTasks.sort(function (a, b) {
+				return a.idTask - b.idTask;
+			});
+			break;
+
+		case 'title':
+			sortedTasks.sort(function (a, b) {
+				return a.title.localeCompare(b.title);
+			});
+			break;
+
+		case 'deadline-asc':
+			sortedTasks.sort(function (a, b) {
+				return new Date(a.deadline) - new Date(b.deadline);
+			});
+			break;
+
+		case 'deadline-desc':
+			sortedTasks.sort(function (a, b) {
+				return new Date(b.deadline) - new Date(a.deadline);
+			});
+			break;
+
+		case 'urgency-desc':
+			sortedTasks.sort(function (a, b) {
+				let urgencyA = calculateUrgencyFromDeadline(a.deadline);
+				let urgencyB = calculateUrgencyFromDeadline(b.deadline);
+				return urgencyB - urgencyA;
+			});
+			break;
+
+		case 'urgency-asc':
+			sortedTasks.sort(function (a, b) {
+				let urgencyA = calculateUrgencyFromDeadline(a.deadline);
+				let urgencyB = calculateUrgencyFromDeadline(b.deadline);
+				return urgencyA - urgencyB;
+			});
+			break;
+
+		case 'status':
+			sortedTasks.sort(function (a, b) {
+				return (a.idStatus || 1) - (b.idStatus || 1);
+			});
+			break;
+
+		case 'category':
+			sortedTasks.sort(function (a, b) {
+				return a.idCategory - b.idCategory;
+			});
+			break;
+
+		case 'subject':
+			sortedTasks.sort(function (a, b) {
+				return a.idSubject - b.idSubject;
+			});
+			break;
+
+		default:
+			sortedTasks.sort(function (a, b) {
+				return a.idTask - b.idTask;
+			});
+	}
+
 	displayTasks(sortedTasks);
 }
 
@@ -310,6 +403,7 @@ function handleForm(event) {
 	let description = document.getElementById('description').value;
 	let idCategory = document.getElementById('taskCategory').value;
 	let idSubject = document.getElementById('taskSubject').value;
+	let idStatus = document.getElementById('taskStatus').value;
 	let deadline = document.getElementById('deadline').value;
 	let editId = document.getElementById('editTaskId').value;
 
@@ -324,6 +418,7 @@ function handleForm(event) {
 				taskList[i].description = description;
 				taskList[i].idCategory = parseInt(idCategory);
 				taskList[i].idSubject = parseInt(idSubject);
+				taskList[i].idStatus = parseInt(idStatus);
 				taskList[i].deadline = deadline;
 				break;
 			}
@@ -343,8 +438,8 @@ function handleForm(event) {
 			description: description,
 			idCategory: parseInt(idCategory),
 			idSubject: parseInt(idSubject),
+			idStatus: parseInt(idStatus),
 			deadline: deadline,
-			completed: false,
 		};
 
 		taskList.push(newTask);
@@ -363,6 +458,7 @@ function editTask(id) {
 			document.getElementById('description').value = task.description;
 			document.getElementById('taskCategory').value = task.idCategory;
 			document.getElementById('taskSubject').value = task.idSubject;
+			document.getElementById('taskStatus').value = task.idStatus;
 			document.getElementById('deadline').value = task.deadline;
 			document.getElementById('editTaskId').value = id;
 			document.getElementById('form-title').textContent = 'Modifier la tâche';
@@ -374,15 +470,88 @@ function editTask(id) {
 	}
 }
 
-function toggleCompleted(id) {
+function displayArchivedTasks() {
+	let archivedBody = document.getElementById('archived-body');
+	if (!archivedBody) return;
+
+	archivedBody.innerHTML = '';
+
+	// Filter completed/cancelled tasks (status 3 or 4)
+	let archivedTasks = taskList.filter(function (task) {
+		return task.idStatus === 3 || task.idStatus === 4;
+	});
+
+	// Update count badge
+	let countBadge = document.getElementById('archived-count');
+	if (countBadge) {
+		countBadge.textContent = archivedTasks.length;
+	}
+
+	// Hide section if no archived tasks
+	let archivedSection = document.getElementById('archived-section');
+	if (archivedSection) {
+		archivedSection.style.display = archivedTasks.length > 0 ? 'block' : 'none';
+	}
+
+	for (let i = 0; i < archivedTasks.length; i++) {
+		let task = archivedTasks[i];
+		let statusInfo = findStatus(task.idStatus);
+		let row = document.createElement('tr');
+
+		row.className = 'task-archived';
+		row.innerHTML = `
+			<td data-label="ID">${task.idTask}</td>
+			<td data-label="Nom">${task.title}</td>
+			<td data-label="Catégorie">${findCategory(task.idCategory)}</td>
+			<td data-label="Matière">${findSubject(task.idSubject)}</td>
+			<td data-label="Date limite">${formatDate(task.deadline)}</td>
+			<td data-label="Statut">${generateStatusDropdown(task)}</td>
+			<td data-label="Actions">
+				<button class="btn-delete" onclick="deleteTask(${
+					task.idTask
+				})">Supprimer</button>
+			</td>
+		`;
+		archivedBody.appendChild(row);
+	}
+}
+
+function toggleArchivedTasks() {
+	let content = document.getElementById('archived-content');
+	let toggle = document.getElementById('archived-toggle');
+
+	if (content.style.display === 'none' || content.style.display === '') {
+		content.style.display = 'block';
+		toggle.textContent = '▼';
+	} else {
+		content.style.display = 'none';
+		toggle.textContent = '▶';
+	}
+}
+
+function updateTaskStatus(id, newStatusId) {
 	for (let i = 0; i < taskList.length; i++) {
 		if (taskList[i].idTask === id) {
-			taskList[i].completed = !taskList[i].completed;
+			taskList[i].idStatus = parseInt(newStatusId);
 			break;
 		}
 	}
 	saveTasks();
 	displayTasks(taskList);
+}
+
+function generateStatusDropdown(task) {
+	let currentStatusId = task.idStatus || 1;
+	let html = `<select class="status-select" onchange="updateTaskStatus(${task.idTask}, this.value)" data-taskid="${task.idTask}">`;
+
+	for (let i = 0; i < statuses.length; i++) {
+		let status = statuses[i];
+		let selected = status.idStatus === currentStatusId ? 'selected' : '';
+		html += `<option value="${status.idStatus}" ${selected} data-color="${status.color}">${status.status}</option>`;
+	}
+
+	html += '</select>';
+	return html;
 }
 
 function cancelEdit() {
@@ -448,5 +617,6 @@ document.addEventListener('DOMContentLoaded', function () {
 	displayCategories();
 	refreshSubjectSelect();
 	refreshCategorySelect();
+	refreshStatusSelect();
 	updateTaskSectionsVisibility();
 });
