@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Préparation Examen - Gestion des Tâches</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        // Données JSON des paramètres
+
+        // Catégories de préparation
+        let categories = [
+            { idCategory: 1, name: "Connaître l'examen" },
+            { idCategory: 2, name: "Évaluer et prioriser" },
+            { idCategory: 3, name: "Planifier les révisions" },
+            { idCategory: 4, name: "Réviser activement" },
+            { idCategory: 5, name: "S'entraîner et ajuster" }
+        ];
+
+        // Matières
+        let subjects = [
+            { idSubject: 1, name: "Mathématiques" },
+            { idSubject: 2, name: "Physique" },
+            { idSubject: 3, name: "Chimie" }
+        ];
+
+        // Niveaux d'urgence
+        let urgencies = [
+            { idUrgency: 1, urgency: "Peu urgent", color: "#4CAF50" },
+            { idUrgency: 2, urgency: "Modéré", color: "#FFC107" },
+            { idUrgency: 3, urgency: "Urgent", color: "#FF9800" },
+            { idUrgency: 4, urgency: "Très urgent", color: "#F44336" }
+        ];
+
+        // Statuts possibles pour une tâche
+        let statuses = [
+            { idStatus: 1, status: "En attente", color: "#95a5a6" },
+            { idStatus: 2, status: "En cours", color: "#3498db" },
+            { idStatus: 3, status: "Terminée", color: "#27ae60" },
+            { idStatus: 4, status: "Annulée", color: "#e74c3c" }
+        ];
+
+        // Variable globale pour la liste des tâches
+        let taskList = [];
+
+        // Fonction pour trouver le nom de la catégorie par son id
+        function findCategory(id) {
+            let found = categories.find(element => element.idCategory == id);
+            if (found) {
+                return found.name;
+            }
+            return "Non catégorisée";
+        }
+
+        // Fonction pour trouver le nom de la matière par son id
+        function findSubject(id) {
+            let found = subjects.find(element => element.idSubject == id);
+            if (found) {
+                return found.name;
+            }
+            return "Inconnue";
+        }
+
+        // Fonction pour calculer l'urgence selon la date limite
+        function calculateUrgency(deadline) {
+            let today = new Date();
+            today.setHours(0, 0, 0, 0);
+            let deadlineDate = new Date(deadline);
+            let diffTime = deadlineDate - today;
+            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays <= 2) return 4;
+            if (diffDays <= 4) return 3;
+            if (diffDays <= 6) return 2;
+            return 1;
+        }
+
+        // Fonction pour trouver l'urgence par son id
+        function findUrgency(id) {
+            let found = urgencies.find(element => element.idUrgency == id);
+            if (found) {
+                return found;
+            }
+            return { urgency: "Inconnue", color: "#999" };
+        }
+
+        // Fonction pour formater la date
+        function formatDate(dateStr) {
+            let date = new Date(dateStr);
+            return date.toLocaleDateString("fr-FR", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
+        }
+
+        // Fonction pour changer le statut d'une tâche
+        function updateStatus(taskId, newStatusId) {
+            // Relire le localStorage pour avoir la version la plus récente
+            let storedTasks = localStorage.getItem("tasks");
+            if (storedTasks) {
+                taskList = JSON.parse(storedTasks);
+            }
+
+            // Trouver la tâche par son ID
+            let task = taskList.find(element => element.idTask == taskId);
+            if (task) {
+                // Mettre à jour le statut
+                task.idStatus = newStatusId;
+
+                // Si le statut est "Terminée" (3), marquer comme completed
+                if (newStatusId == 3) {
+                    task.completed = true;
+                } else if (newStatusId == 4) {
+                    // Si annulée, aussi marquer comme completed pour l'archivage
+                    task.completed = true;
+                } else {
+                    task.completed = false;
+                }
+
+                // Enregistrer dans le localStorage
+                localStorage.setItem("tasks", JSON.stringify(taskList));
+
+                // Rafraîchir l'affichage
+                displayTasks();
+            }
+        }
+
+        // Fonction pour générer les boutons de statut
+        function generateStatusButtons(task) {
+            let currentStatusId = task.idStatus || 1;
+            let buttons = "";
+
+            statuses.forEach(function (status) {
+                let isActive = (status.idStatus == currentStatusId);
+                let activeClass = isActive ? "active" : "";
+                let disabledAttr = isActive ? "disabled" : "";
+
+                buttons += `<button 
+                    type="button" 
+                    class="btn-status ${activeClass}" 
+                    style="background-color: ${status.color}"
+                    ${disabledAttr}
+                    onclick="updateStatus(${task.idTask}, ${status.idStatus})"
+                    data-taskid="${task.idTask}"
+                    data-status="${status.idStatus}"
+                >${status.status}</button>`;
+            });
+
+            return buttons;
+        }
+
+        // Fonction pour afficher les tâches dans le tableau HTML
+        function displayTasks() {
+            let tbody = document.getElementById("table-body");
+            tbody.innerHTML = "";
+
+            // Filtrer pour ne pas afficher les tâches terminées ou annulées
+            let activeTasks = taskList.filter(function (task) {
+                return !task.completed;
+            });
+
+            activeTasks.forEach(function (task) {
+                let urgencyId = calculateUrgency(task.deadline);
+                let urgencyInfo = findUrgency(urgencyId);
+
+                let row = `
+                    <tr>
+                        <td data-label="ID">${task.idTask}</td>
+                        <td data-label="Nom">${task.title}</td>
+                        <td data-label="Description">${task.description}</td>
+                        <td data-label="Catégorie">${findCategory(task.idCategory)}</td>
+                        <td data-label="Matière">${findSubject(task.idSubject)}</td>
+                        <td data-label="Date limite">${formatDate(task.deadline)}</td>
+                        <td data-label="Urgence"><span class="urgency-badge" style="background-color: ${urgencyInfo.color}">${urgencyInfo.urgency}</span></td>
+                        <td data-label="Statut" class="status-buttons">${generateStatusButtons(task)}</td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML("beforeend", row);
+            });
+        }
+
+        // Fonction pour afficher les tâches archivées (terminées/annulées)
+        function displayArchivedTasks() {
+            let tbody = document.getElementById("archived-body");
+            tbody.innerHTML = "";
+
+            let archivedTasks = taskList.filter(function (task) {
+                return task.completed;
+            });
+
+            // Mettre à jour le compteur
+            let countBadge = document.getElementById("archived-count");
+            if (countBadge) {
+                countBadge.textContent = archivedTasks.length;
+            }
+
+            // Masquer la section si aucune tâche archivée
+            let archivedSection = document.getElementById("archived-section");
+            if (archivedSection) {
+                archivedSection.style.display = archivedTasks.length > 0 ? "block" : "none";
+            }
+
+            archivedTasks.forEach(function (task) {
+                let statusInfo = statuses.find(s => s.idStatus == task.idStatus) || { status: "Terminée", color: "#27ae60" };
+
+                let row = `
+                    <tr>
+                        <td data-label="ID">${task.idTask}</td>
+                        <td data-label="Nom">${task.title}</td>
+                        <td data-label="Catégorie">${findCategory(task.idCategory)}</td>
+                        <td data-label="Matière">${findSubject(task.idSubject)}</td>
+                        <td data-label="Statut"><span class="status-badge" style="background-color: ${statusInfo.color}">${statusInfo.status}</span></td>
+                    </tr>
+                `;
+                tbody.insertAdjacentHTML("beforeend", row);
+            });
+        }
+
+        // Fonction pour basculer l'affichage des tâches archivées
+        function toggleArchivedTasks() {
+            let content = document.getElementById("archived-content");
+            let toggle = document.getElementById("archived-toggle");
+
+            if (content.style.display === "none" || content.style.display === "") {
+                content.style.display = "block";
+                toggle.textContent = "▼";
+            } else {
+                content.style.display = "none";
+                toggle.textContent = "▶";
+            }
+        }
+
+        // Exécution au chargement du document
+        document.onreadystatechange = function () {
+            if (document.readyState === "complete") {
+                // Lecture des tâches depuis le localStorage
+                let storedTasks = localStorage.getItem("tasks");
+                if (storedTasks) {
+                    taskList = JSON.parse(storedTasks);
+                }
+
+                console.log("Tâches récupérées du localStorage :");
+                console.log(taskList);
+
+                // Afficher les tâches
+                displayTasks();
+                displayArchivedTasks();
+            }
+        };
+    </script>
+</head>
+
+<body>
+
+    <header>
+        <h1>Préparation Examen</h1>
+    </header>
+
+    <main>
+        <section id="table-section">
+            <h2>Tâches en cours</h2>
+
+            <table id="task-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Description</th>
+                        <th>Catégorie</th>
+                        <th>Matière</th>
+                        <th>Date limite</th>
+                        <th>Urgence</th>
+                        <th>Statut</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Lignes générées dynamiquement par JavaScript -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="archived-section" style="display: none;">
+            <h2 onclick="toggleArchivedTasks()" style="cursor: pointer; user-select: none;">
+                <span id="archived-toggle">▶</span> Tâches archivées
+                <span id="archived-count" class="count-badge">0</span>
+            </h2>
+            <div id="archived-content" style="display: none;">
+                <table id="archived-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nom</th>
+                            <th>Catégorie</th>
+                            <th>Matière</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody id="archived-body">
+                        <!-- Lignes générées dynamiquement par JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>Créé par <strong>Angela</strong></p>
+        <p>&copy; 2025 - Tous droits réservés</p>
+    </footer>
+
+</body>
+
+</html>
