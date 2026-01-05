@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Préparation Examen - Données JSON</title>
+
+    <script>
+        // Étape 1E : Données JSON affectées à des variables JS
+
+        // Liste des tâches (étape 1D)
+        let listeTaches = [
+            { "idTask": 1, "title": "Réviser les fonctions", "description": "Revoir les chapitres sur les fonctions dérivées", "idCategory": 4, "idSubject": 1, "idStatus": 1, "deadline": "2025-12-18" },
+            { "idTask": 2, "title": "Analyser le format de l'examen", "description": "Consulter les annales et le référentiel officiel", "idCategory": 1, "idSubject": 1, "idStatus": 2, "deadline": "2025-12-15" },
+            { "idTask": 3, "title": "Faire des exercices de mécanique", "description": "Résoudre 10 exercices sur la cinématique", "idCategory": 5, "idSubject": 2, "idStatus": 1, "deadline": "2025-12-20" }
+        ];
+
+        // Liste des urgences (étape 1B)
+        let listeUrgences = [
+            { "idUrgency": 1, "urgency": "Peu urgent", "color": "#4CAF50" },
+            { "idUrgency": 2, "urgency": "Modéré", "color": "#FFC107" },
+            { "idUrgency": 3, "urgency": "Urgent", "color": "#FF9800" },
+            { "idUrgency": 4, "urgency": "Très urgent", "color": "#F44336" }
+        ];
+
+        // Liste des catégories (étape 1C)
+        let listeCategories = [
+            { "idCategory": 1, "name": "Connaître l'examen", "description": "Analysez le format, le contenu et les attentes via le référentiel ou les consignes officielles pour cibler l'essentiel." },
+            { "idCategory": 2, "name": "Évaluer et prioriser", "description": "Identifiez vos forces et faiblesses dans chaque matière, puis listez les sujets prioritaires en fonction de la difficulté et du temps disponible." },
+            { "idCategory": 3, "name": "Planifier les révisions", "description": "Créez un calendrier réaliste en répartissant les matières sur les jours restants, avec des créneaux courts (2-3 par jour) et des pauses intégrées." },
+            { "idCategory": 4, "name": "Réviser activement", "description": "Utilisez des fiches, cartes mentales, répétition espacée et auto-tests pour mémoriser et reformuler les concepts avec vos mots." },
+            { "idCategory": 5, "name": "S'entraîner et ajuster", "description": "Simulez des épreuves avec des annales, évaluez vos progrès régulièrement et adaptez le planning tout en maintenant sommeil et bien-être." }
+        ];
+
+        // Liste des matières (étape 1C)
+        let listeMatieres = [
+            { "idSubject": 1, "name": "Mathématiques" },
+            { "idSubject": 2, "name": "Physique" },
+            { "idSubject": 3, "name": "Chimie" }
+        ];
+
+        // Liste des statuts (étape 1C)
+        let listeStatuts = [
+            { "idStatus": 1, "status": "En attente" },
+            { "idStatus": 2, "status": "En cours" },
+            { "idStatus": 3, "status": "Terminée" },
+            { "idStatus": 4, "status": "Annulée" }
+        ];
+
+        // Affichage dans la console
+        console.log("Liste des tâches :");
+        console.log(listeTaches);
+
+        console.log("Liste des urgences :");
+        console.log(listeUrgences);
+
+        console.log("Liste des catégories :");
+        console.log(listeCategories);
+
+        console.log("Liste des matières :");
+        console.log(listeMatieres);
+
+        console.log("Liste des statuts :");
+        console.log(listeStatuts);
+    </script>
+</head>
+
+<body>
+    <h1>Préparation Examen - Données JSON (Étape 1E)</h1>
+    <p>Ouvrez la console du navigateur (F12 → Console) pour voir les données JSON.</p>
+</body>
+
+</html>
