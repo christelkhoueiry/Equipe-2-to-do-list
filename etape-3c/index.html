@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Préparation Examen - Récapitulatif des Tâches</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script>
+        // Données JSON des paramètres
+
+        // Catégories de préparation
+        let categories = [
+            { idCategory: 1, name: "Connaître l'examen" },
+            { idCategory: 2, name: "Évaluer et prioriser" },
+            { idCategory: 3, name: "Planifier les révisions" },
+            { idCategory: 4, name: "Réviser activement" },
+            { idCategory: 5, name: "S'entraîner et ajuster" }
+        ];
+
+        // Matières
+        let subjects = [
+            { idSubject: 1, name: "Mathématiques" },
+            { idSubject: 2, name: "Physique" },
+            { idSubject: 3, name: "Chimie" }
+        ];
+
+        // Niveaux d'urgence
+        let urgencies = [
+            { idUrgency: 1, urgency: "Peu urgent", color: "#4CAF50" },
+            { idUrgency: 2, urgency: "Modéré", color: "#FFC107" },
+            { idUrgency: 3, urgency: "Urgent", color: "#FF9800" },
+            { idUrgency: 4, urgency: "Très urgent", color: "#F44336" }
+        ];
+
+        // Statuts
+        let statuses = [
+            { idStatus: 1, status: "En attente" },
+            { idStatus: 2, status: "En cours" },
+            { idStatus: 3, status: "Terminée" },
+            { idStatus: 4, status: "Annulée" }
+        ];
+
+        // Variable globale pour la liste des tâches
+        let taskList = [];
+
+        // Fonction pour trouver le nom de la catégorie par son id
+        function findCategory(id) {
+            let found = categories.find(element => element.idCategory == id);
+            if (found) {
+                return found.name;
+            }
+            return "Non catégorisée";
+        }
+
+        // Fonction pour trouver le nom de la matière par son id
+        function findSubject(id) {
+            let found = subjects.find(element => element.idSubject == id);
+            if (found) {
+                return found.name;
+            }
+            return "Inconnue";
+        }
+
+        // Fonction pour trouver le statut par son id
+        function findStatus(id) {
+            let found = statuses.find(element => element.idStatus == id);
+            if (found) {
+                return found.status;
+            }
+            return "Inconnu";
+        }
+
+        // Fonction pour calculer l'urgence selon la date limite
+        function calculateUrgency(deadline) {
+            let today = new Date();
+            today.setHours(0, 0, 0, 0);
+            let deadlineDate = new Date(deadline);
+            let diffTime = deadlineDate - today;
+            let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+            if (diffDays <= 2) return 4;
+            if (diffDays <= 4) return 3;
+            if (diffDays <= 6) return 2;
+            return 1;
+        }
+
+        // Fonction pour trouver l'urgence par son id
+        function findUrgency(id) {
+            let found = urgencies.find(element => element.idUrgency == id);
+            if (found) {
+                return found;
+            }
+            return { urgency: "Inconnue", color: "#999" };
+        }
+
+        // Fonction pour formater la date
+        function formatDate(dateStr) {
+            let date = new Date(dateStr);
+            return date.toLocaleDateString("fr-FR", {
+                day: "numeric",
+                month: "long",
+                year: "numeric"
+            });
+        }
+
+        // Fonction pour filtrer les tâches selon un critère
+        function filterTasks(criteria) {
+            let filteredTasks = taskList;
+
+            if (criteria === "all") {
+                filteredTasks = taskList;
+            } else if (criteria === "urgent") {
+                filteredTasks = taskList.filter(function (task) {
+                    let urgencyId = calculateUrgency(task.deadline);
+                    return urgencyId >= 3; // Urgent ou Très urgent
+                });
+            } else if (criteria === "pending") {
+                filteredTasks = taskList.filter(function (task) {
+                    return task.idStatus === 1; // En attente
+                });
+            } else if (criteria === "inprogress") {
+                filteredTasks = taskList.filter(function (task) {
+                    return task.idStatus === 2; // En cours
+                });
+            } else if (criteria === "completed") {
+                filteredTasks = taskList.filter(function (task) {
+                    return task.idStatus === 3 || task.idStatus === 4; // Terminée ou Annulée
+                });
+            }
+
+            displayTasks(filteredTasks);
+        }
+
+        // Fonction pour afficher les tâches dans le tableau HTML
+        function displayTasks(tasks) {
+            let tbody = document.getElementById("table-body");
+            tbody.innerHTML = "";
+            let htmlContent = "";
+
+            tasks.forEach(function (task) {
+                let urgencyId = calculateUrgency(task.deadline);
+                let urgencyInfo = findUrgency(urgencyId);
+
+                htmlContent += `
+                    <tr>
+                        <td>${task.idTask}</td>
+                        <td>${task.title}</td>
+                        <td>${task.description}</td>
+                        <td>${findCategory(task.idCategory)}</td>
+                        <td>${findSubject(task.idSubject)}</td>
+                        <td>${findStatus(task.idStatus)}</td>
+                        <td>${formatDate(task.deadline)}</td>
+                        <td><span class="urgency-badge" style="background-color: ${urgencyInfo.color}">${urgencyInfo.urgency}</span></td>
+                    </tr>
+                `;
+            });
+
+            tbody.insertAdjacentHTML("beforeend", htmlContent);
+        }
+
+        // Exécution au chargement du document
+        document.onreadystatechange = function () {
+            if (document.readyState === "complete") {
+                // Lecture des tâches depuis le localStorage
+                let storedTasks = localStorage.getItem("tasks");
+                if (storedTasks) {
+                    taskList = JSON.parse(storedTasks);
+                }
+
+                console.log("Tâches récupérées du localStorage :");
+                console.log(taskList);
+
+                // Afficher les tâches dans le tableau
+                displayTasks(taskList);
+
+                // Initialiser le filtre
+                document.getElementById("filter").addEventListener("change", function () {
+                    filterTasks(this.value);
+                });
+            }
+        };
+    </script>
+</head>
+
+<body>
+
+    <header>
+        <h1>Préparation Examen</h1>
+    </header>
+
+    <main>
+        <section id="filter-section">
+            <label for="filter">Filtrer par :</label>
+            <select id="filter">
+                <option value="all">Toutes les tâches</option>
+                <option value="urgent">Tâches urgentes</option>
+                <option value="pending">En attente</option>
+                <option value="inprogress">En cours</option>
+                <option value="completed">Terminées/Annulées</option>
+            </select>
+        </section>
+
+        <section id="table-section">
+            <h2>Récapitulatif des tâches</h2>
+
+            <table id="task-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Description</th>
+                        <th>Catégorie</th>
+                        <th>Matière</th>
+                        <th>Statut</th>
+                        <th>Date limite</th>
+                        <th>Urgence</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Lignes générées dynamiquement par JavaScript -->
+                </tbody>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>Créé par <strong>Angela</strong></p>
+        <p>&copy; 2025 - Tous droits réservés</p>
+    </footer>
+
+</body>
+
+</html>
